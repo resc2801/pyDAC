@@ -1,7 +1,7 @@
 import math
 from functools import reduce
 from operator import add, mul
-from typing import Iterator, List
+from typing import Iterator, List, Dict
 
 import numpy as np
 from bitarray import bitarray
@@ -22,6 +22,7 @@ class DAC:
         self.__B = []
         self._levels, self._block_sizes = self.__optimize(vals, 0.05)
         self._original_bit_size = len(vals) * max(1, max(vals).bit_length())
+        self._vbyte_bit_size = sum(map(lambda x: 8 * math.ceil(math.log2(x+1)/7), vals))
 
         for level in tqdm(range(self._levels), desc="Constructing optimal DAC."):
 
@@ -58,12 +59,22 @@ class DAC:
         return total_block_bits + total_continuation_bits
 
     @property
-    def compression_ratio(self) -> float:
+    def compression_ratios(self) -> Dict[str, float]:
         """
         :return: Ratio between size of uncompressed integer sequence and size of DAC encoded integer sequence.
         """
 
-        return self._original_bit_size / self.bit_length
+        return {"vbyte": self._vbyte_bit_size / self.bit_length,
+                "fixed_width": self._original_bit_size / self.bit_length}
+
+    @property
+    def space_savings(self) -> Dict[str, float]:
+        """
+        :return: Ratio between size of uncompressed integer sequence and size of DAC encoded integer sequence.
+        """
+
+        return {"vbyte":   1.0 - self.bit_length / self._vbyte_bit_size,
+                "fixed_width":     1.0 - self.bit_length / self._original_bit_size}
 
     @property
     def num_values(self) -> int:

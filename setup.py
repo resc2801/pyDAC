@@ -10,7 +10,7 @@ except(IOError, ImportError):
 
 setup(
     name='pyDAC',
-    version='0.0.1',
+    version='0.0.2',
     description='pyDAC (python Directly Addressable Codes) offers a variable-length encoding scheme for (unsigned) integers with random access to any element of the encoded sequence.',
     long_description=long_description,
     long_description_content_type=long_description_content_type,
