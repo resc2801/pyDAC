@@ -4,7 +4,7 @@ from typing import Tuple
 import numpy as np
 import tensorflow_probability as tfp
 
-from pydac import DAC
+from pyDAC import DAC
 
 
 def generate_values(n: int, bit_range: Tuple[int,int], tfp_distr , distr_params):
